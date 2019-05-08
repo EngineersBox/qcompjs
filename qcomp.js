@@ -274,6 +274,23 @@ class QC {
 
 }
 
+function entangle(qubit) {
+  var p1_amps = [];
+  var p2_amps = [];
+  const comb_particles = combine(qubits.value);
+
+  comb_particles.forEach(function(i) {
+    if (i == zero) {
+      p1_amps.push(qubit.values[i]);
+    } else if (i == one) {
+      p2_amps.push(qubit.values[i]);
+    } else {
+      continue;
+    }
+  })
+  return p1_amps + p2_amps;
+}
+
 // Collapse a superposition to display or directly display a qubit(s) value
 function measure(qubit) {
   var amp_size = qubit.amplitudes.length;
