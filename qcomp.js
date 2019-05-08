@@ -7,10 +7,10 @@
 * Description: Qubit representation and assosciated logic gates
 */
 
+// Include the MathJs library
 const math = require('mathjs');
 const posi = math.complex(0, 1);
 const negi = math.complex('-i');
-
 const zero = [1,0];
 const one = [0,1];
 
@@ -55,8 +55,9 @@ class QC {
   /*
   * Initialise n new qubits with values
   * E.g:
-  * q(1) -> |1>
-  * q(0,1) -> |01>
+  * q(1) -> |0>
+  * q(2) -> |00>
+  * q(n) -> |000...00>
   */
   qreg(registerCount) {
     this.value = combine(Array(registerCount).fill(zero));
@@ -286,26 +287,22 @@ function measure(qubit) {
   }
 }
 
-function dispVal(qubit) {
-  return qubit.value;
-}
-
 // Create a multi-qubit matrix (combine qubits)
 function combine(arglist) {
   if (arglist.length == 1) {
     return arglist[0]
+  } else {
+    var value = math.identity(2 ** arglist.length);
+    var str_val_line = "";
+    arglist.forEach(function(i) {
+      if (i == zero) {
+        str_val_line += "0";
+      } else if (i == one) {
+        str_val_line += "1";
+      }
+    })
+    return value._data[parseInt(str_val_line, 2)]
   }
-
-  var value = math.identity(2 ** arglist.length);
-  var str_val_line = "";
-  arglist.forEach(function(i) {
-    if (i == zero) {
-      str_val_line += "0";
-    } else if (i == one) {
-      str_val_line += "1";
-    }
-  })
-  return value._data[parseInt(str_val_line, 2)]
 }
 
 var qc = new QC();
