@@ -60,7 +60,7 @@ class QC {
   * q(n) -> |000...00>
   */
   qreg(registerCount) {
-    this.value = combine(Array(registerCount).fill(zero));
+    this.value = nKron(Array(registerCount).fill(zero));
     console.log("Initial value: [" + this.value + "]")
     this.amplitudes = [];
     return this;
@@ -277,7 +277,7 @@ class QC {
 function entangle(qubit) {
   var p1_amps = [];
   var p2_amps = [];
-  const comb_particles = combine(qubits.value);
+  const comb_particles = nKron(qubits.value);
 
   comb_particles.forEach(function(i) {
     if (i == zero) {
@@ -288,7 +288,7 @@ function entangle(qubit) {
       continue;
     }
   })
-  return p1_amps + p2_amps;
+  return p1_amps + p2_amps;x
 }
 
 // Collapse a superposition to display or directly display a qubit(s) value
@@ -304,8 +304,12 @@ function measure(qubit) {
   }
 }
 
-// Create a multi-qubit matrix (combine qubits)
-function combine(arglist) {
+function displayValue(qubit) {
+  return "Final value: [" + qubit.value + "]";
+}
+
+// Create a multi-qubit matrix (nKron qubits)
+function nKron(arglist) {
   if (arglist.length == 1) {
     return arglist[0]
   } else {
@@ -326,4 +330,4 @@ var qc = new QC();
 var newBit = qc.qreg(2);
 
 console.log();
-console.log(qc.cx(qc.h(newBit)));
+console.log(displayValue(qc.cx(qc.h(newBit))));
