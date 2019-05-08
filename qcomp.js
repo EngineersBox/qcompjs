@@ -311,8 +311,10 @@ function displayValue(qubit) {
 // Create a multi-qubit matrix (nKron qubits)
 function nKron(arglist) {
   if (arglist.length == 1) {
+    // If there is only one value then return it
     return arglist[0]
   } else {
+    // Generate the identity matrix that matches the arglist length
     var value = math.identity(2 ** arglist.length);
     var str_val_line = "";
     arglist.forEach(function(i) {
@@ -322,6 +324,7 @@ function nKron(arglist) {
         str_val_line += "1";
       }
     })
+    // Return the row in the identity matrix that matches the combined argument list
     return value._data[parseInt(str_val_line, 2)]
   }
 }
