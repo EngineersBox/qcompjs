@@ -29,10 +29,9 @@ Array.prototype.equals = function (array) {
   if (this.length != array.length) return false;
 
   for (var i = 0, l=this.length; i < l; i++) {
-    // Check if there are nested arrays and apply recursion to them
-    if (this[i] instanceof Array && array[i] instanceof Array) {
-      if (!this[i].equals(array[i]))
-        return false;
+    if ((this[i] instanceof Array) && (array[i] instanceof Array)) {
+      // Check if there are nested arrays and apply recursion to them
+      if (!this[i].equals(array[i])) return false;
     } else if (this[i] != array[i]) {
       // Check false if there are two object instances
       return false;
