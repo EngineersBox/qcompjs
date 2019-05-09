@@ -9,10 +9,39 @@
 
 // Include the MathJs library
 const math = require('mathjs');
+const inter = require('./notation_interpreter.js')
+
 const posi = math.complex(0, 1);
 const negi = math.complex('-i');
 const zero = [1,0];
 const one = [0,1];
+
+// Check if the method already exists
+if(Array.prototype.equals)
+  console.warn("Overriding existing Array.prototype.equals");
+
+// Add the equals() function/method to the prototype of array
+Array.prototype.equals = function (array) {
+  // Return false if the argument is not an array
+  if (!array) return false;
+
+  // Return false if the array lengths are different
+  if (this.length != array.length) return false;
+
+  for (var i = 0, l=this.length; i < l; i++) {
+    // Check if there are nested arrays and apply recursion to them
+    if (this[i] instanceof Array && array[i] instanceof Array) {
+      if (!this[i].equals(array[i]))
+        return false;
+    } else if (this[i] != array[i]) {
+      // Check false if there are two object instances
+      return false;
+    }
+  }
+  return true;
+}
+
+Object.defineProperty(Array.prototype, "equals", {enumerable: false});
 
 class Helpers {
 
@@ -305,7 +334,7 @@ function measure(qubit) {
 }
 
 function displayValue(qubit) {
-  return "Final value: [" + qubit.value + "]";
+  return "\nFinal value: [" + qubit.value + "]";
 }
 
 // Create a multi-qubit matrix (nKron qubits)
@@ -318,9 +347,9 @@ function nKron(arglist) {
     var value = math.identity(2 ** arglist.length);
     var str_val_line = "";
     arglist.forEach(function(i) {
-      if (i == zero) {
+      if (i.equals(zero) === true) {
         str_val_line += "0";
-      } else if (i == one) {
+      } else if (i.equals(one) === true) {
         str_val_line += "1";
       }
     })
@@ -330,7 +359,7 @@ function nKron(arglist) {
 }
 
 var qc = new QC();
-var newBit = qc.qreg(2);
+//var newBit = qc.qreg(2);
 
-console.log();
-console.log(displayValue(qc.cx(qc.h(newBit))));
+console.log(nKron(inter.evalBraKet("|01>")));
+//console.log(displayValue(qc.cx(qc.h(newBit))));
