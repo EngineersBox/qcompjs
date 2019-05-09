@@ -333,6 +333,7 @@ function measure(qubit) {
   }
 }
 
+// Return the stored qubit value
 function displayValue(qubit) {
   return "\nFinal value: [" + qubit.value + "]";
 }
@@ -359,7 +360,7 @@ function nKron(arglist) {
 }
 
 var qc = new QC();
-//var newBit = qc.qreg(2);
+var newBit = qc.qreg(2);
 
 console.log(nKron(inter.evalBraKet("|01>")));
-//console.log(displayValue(qc.cx(qc.h(newBit))));
+console.log(displayValue(qc.cx(qc.h(newBit))));
