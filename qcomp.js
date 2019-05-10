@@ -218,8 +218,7 @@ class QC {
     }
   }
 
-  // Two Qubit Gates
-
+  /* Two Qubit Gates */
   // Swap the values of two qubits
   swap(qubits) {
     this.swap = [[1, 0, 0, 0],
@@ -270,8 +269,7 @@ class QC {
     return this;
   }
 
-  // Three Qubit Gates
-
+  /* Three Qubit Gates */
   // Rotate pi radians on the x-axis if the first and second qubits are one
   ccnot(qubits) {
     this.toffoli = [[1, 0, 0, 0, 0, 0, 0, 0],
@@ -316,7 +314,7 @@ function entangle(qubit) {
       continue;
     }
   })
-  return p1_amps + p2_amps;x
+  return p1_amps + p2_amps;
 }
 
 // Collapse a superposition to display or directly display a qubit(s) value
@@ -334,7 +332,7 @@ function measure(qubit) {
 
 // Return the stored qubit value
 function displayValue(qubit) {
-  return "\nFinal value: [" + qubit.value + "]";
+  return qubit.value;
 }
 
 // Create a multi-qubit matrix (nKron qubits)
@@ -358,8 +356,25 @@ function nKron(arglist) {
   }
 }
 
+// Return a pattern of one and zero vectors that match the nKron value
+function unKron(arglist) {
+  // Find the index of the 1
+  var index_value = arglist.indexOf(1);
+  var str_val_line = "";
+  // Check if there are zeros before the one and add them
+  if (index_value < Math.log2(arglist.length)) {
+    for (var i = 0; i < Math.log2(arglist.length) - index_value; i++) {
+      str_val_line += "0";
+    }
+  }
+  str_val_line += index_value.toString(2);
+  // Return the notation evaluated string
+  return inter.evalBraKet(str_val_line);
+}
+
 var qc = new QC();
 var newBit = qc.qreg(2);
 
+console.log(unKron(nKron(inter.evalBraKet("|100>"))));
 console.log(nKron(inter.evalBraKet("|01>")));
 console.log(displayValue(qc.cx(qc.h(newBit))));
