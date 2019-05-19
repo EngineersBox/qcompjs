@@ -86,6 +86,18 @@ module.exports = {
     str_val_line += index_value.toString(2);
     // Return the notation evaluated string
     return inter.evalBraKet(str_val_line);
+  },
+
+  /*REVIEW: If not valid, then delete*/
+  stateChange: function stateChange(qubit) {
+    var amps = qubit.amplitudes;
+    var state = [];
+    qubit.value.forEach(function(i) {
+      if ((Array.isArray(i)) && ((i.equals(zero)) || (i.equals(one)))) {
+        state.push(math.multiply([[0, 1],[1, 0]], i));
+      }
+    })
+    if (amps != state) return state
   }
 
 }
