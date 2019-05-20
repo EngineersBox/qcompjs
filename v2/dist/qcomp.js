@@ -23,7 +23,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var one = [0, 1];
 var zero = [1, 0];
 var posi = math.complex('0+1');
-var neg9 = math.complex('0-1');
+var negi = math.complex('0-1');
 
 // Check if the method already exists
 if (Array.prototype.equals) console.warn("Overriding existing Array.prototype.equals");
@@ -66,74 +66,66 @@ var QC = function () {
   }
 
   _createClass(QC, [{
-    key: 'x',
-    value: function x(bits) {
+    key: 'applyOperatorToBits',
+    value: function applyOperatorToBits(operation, bits) {
+      if (this.ALL.equals(bits)) {
+        this.values = this.values.map(function (val) {
+          return math.multiply(val, operation);
+        });
+      } else {
+        for (var i in bits) {
+          this.values[bits[i]] = math.multiply(this.values[bits[i]], operation);
+        }
+      }
+      return this.values;
+    }
+  }, {
+    key: 'X',
+    value: function X(bits) {
       this.paulix = [[0, 1], [1, 0]];
-      for (var i in bits) {
-        this.values[bits[i]] = math.multiply(this.values[bits[i]], this.paulix);
-      }
+      this.values = this.applyOperatorToBits(this.paulix, bits);
       return this;
     }
   }, {
-    key: 'y',
-    value: function y(bits) {
+    key: 'Y',
+    value: function Y(bits) {
       this.pauliy = [[0, negi], [posi, 0]];
-      for (var i in bits) {
-        this.values[bits[i]] = math.multiply(this.values[bits[i]], this.pauliy);
-      }
+      this.values = this.applyOperatorToBits(this.pauliy, bits);
       return this;
     }
   }, {
-    key: 'z',
-    value: function z(bits) {
+    key: 'Z',
+    value: function Z(bits) {
       this.pauliz = [[1, 0], [0, -1]];
-      for (var i in bits) {
-        this.values[bits[i]] = math.multiply(this.values[bits[i]], this.pauliz);
-      }
+      this.values = this.applyOperatorToBits(this.pauliz, bits);
       return this;
     }
   }, {
     key: 'sqrtx',
     value: function sqrtx(bits) {
       this.sqrtx = math.multiply(0.5, [[posi, negi], [negi, posi]]);
-      for (var i in bits) {
-        this.values[bits[i]] = math.multiply(this.values[bits[i]], this.sqrtx);
-      }
+      this.values = this.applyOperatorToBits(this.sqrtx, bits);
       return this;
     }
   }, {
     key: 'phase',
     value: function phase(theta, bits) {
       this.phase = [[1, 0], [0, Math.exp(math.multiply(posi, theta))]];
-      for (var i in bits) {
-        this.values[bits[i]] = math.multiply(this.values[bits[i]], this.phase);
-      }
+      this.values = this.applyOperatorToBits(this.phase, bits);
       return this;
     }
   }, {
-    key: 't',
-    value: function t(bits) {
+    key: 'T',
+    value: function T(bits) {
       this.t = [[1, 0], [0, math.e ** (posi * (math.pi / 4))]];
-      for (var i in bits) {
-        this.values[bits[i]] = math.multiply(this.values[bits[i]], this.t);
-      }
+      this.values = this.applyOperatorToBits(this.t, bits);
       return this;
     }
   }, {
-    key: 'h',
-    value: function h(bits) {
-      var _this = this;
-
+    key: 'H',
+    value: function H(bits) {
       this.h = math.multiply(1 / math.sqrt(2), [[1, 1], [1, -1]]);
-      if (this.ALL.equals(bits)) {
-        this.values = this.values.map(function (val) {
-          return math.multiply(val, _this.h);
-        });
-      } else {
-        for (var i in bits) {
-          this.values[bits[i]] = math.multiply(this.values[bits[i]], this.h);
-        }
-      }
+      this.values = this.applyOperatorToBits(this.h, bits);
       return this;
     }
   }, {
@@ -154,5 +146,4 @@ exports.default = QC;
 
 
 var qc = new QC("|01001>");
-
-console.log(qc.x([1, 2]).x([1, 2]).values);
+console.log(qc.H([1, 2]).H([1, 2]).values);
