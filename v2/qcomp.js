@@ -4,7 +4,7 @@ import format from './notation_interpreter';
 const one = [0,1];
 const zero = [1,0];
 const posi = math.complex('0+1');
-const neg9 = math.complex('0-1');
+const negi = math.complex('0-1');
 
 // Check if the method already exists
 if(Array.prototype.equals)
@@ -46,70 +46,63 @@ export default class QC {
 
   }
 
-  x(bits) {
+  applyOperatorToBits(operation, bits) {
+    if (this.ALL.equals(bits)) {
+      this.values = this.values.map(val => math.multiply(val, operation));
+    } else {
+      for (var i in bits) {
+        this.values[bits[i]] = math.multiply(this.values[bits[i]], operation);
+      }
+    }
+    return this.values;
+  }
+
+  X(bits) {
     this.paulix = [[0,1],
                   [1,0]];
-    for (var i in bits) {
-      this.values[bits[i]] = math.multiply(this.values[bits[i]], this.paulix);
-    }
+    this.values = this.applyOperatorToBits(this.paulix, bits);
     return this;
   }
 
-  y(bits) {
+  Y(bits) {
     this.pauliy = [[0,negi],
                   [posi, 0]];
-    for (var i in bits) {
-      this.values[bits[i]] = math.multiply(this.values[bits[i]], this.pauliy);
-    }
+    this.values = this.applyOperatorToBits(this.pauliy, bits);
     return this;
   }
 
-  z(bits) {
+  Z(bits) {
     this.pauliz = [[1, 0],
                   [0, -1]];
-    for (var i in bits) {
-      this.values[bits[i]] = math.multiply(this.values[bits[i]], this.pauliz);
-    }
+    this.values = this.applyOperatorToBits(this.pauliz, bits);
     return this;
   }
 
   sqrtx(bits) {
     this.sqrtx = math.multiply(0.5, [[posi, negi],
                                     [negi, posi]]);
-    for (var i in bits) {
-      this.values[bits[i]] = math.multiply(this.values[bits[i]], this.sqrtx);
-    }
+    this.values = this.applyOperatorToBits(this.sqrtx, bits);
     return this;
   }
 
   phase(theta, bits) {
     this.phase = [[1, 0],
               [0, Math.exp(math.multiply(posi, theta))]];
-    for (var i in bits) {
-      this.values[bits[i]] = math.multiply(this.values[bits[i]], this.phase);
-    }
+    this.values = this.applyOperatorToBits(this.phase, bits);
     return this;
   }
 
-  t(bits) {
+  T(bits) {
     this.t = [[1, 0],
               [0, math.e ** (posi * (math.pi/4))]];
-    for (var i in bits) {
-      this.values[bits[i]] = math.multiply(this.values[bits[i]], this.t);
-    }
+    this.values = this.applyOperatorToBits(this.t, bits);
     return this;
   }
 
-  h(bits) {
+  H(bits) {
     this.h = math.multiply((1 / math.sqrt(2)), [[1, 1],
                                                 [1, -1]]);
-    if (this.ALL.equals(bits)) {
-      this.values = this.values.map(val => math.multiply(val, this.h));
-    } else {
-      for (var i in bits) {
-        this.values[bits[i]] = math.multiply(this.values[bits[i]], this.h);
-      }
-    }
+    this.values = this.applyOperatorToBits(this.h, bits);
     return this;
   }
 
@@ -123,5 +116,6 @@ export default class QC {
 }
 
 const qc = new QC("|01001>");
-
-console.log(qc.x([1,2]).x([1,2]).values);
+console.log(qc.H([1,2])
+              .H([1,2])
+              .values);
