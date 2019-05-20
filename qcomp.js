@@ -302,8 +302,7 @@ class QC {
 }
 
 var qc = new QC();
-var newBit = qc.qreg(2);
+var newBit = qc.qreg(3);
 
-console.log(form.unKron(form.nKron(inter.evalBraKet("|100>"))));
-console.log(form.nKron(inter.evalBraKet("|01>")));
-console.log(form.displayValue(qc.cx(qc.h(newBit))));
+console.log(form.nKron(inter.evalBraKet("|100>")));
+console.log(qc.ccnot(form.nKron(inter.evalBraKet("|001>"))));
