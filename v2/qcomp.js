@@ -134,7 +134,7 @@ export default class QC {
   }
 
   cswap(controlBits, targetBits) {
-    if (targetBits.length > 2) throw new Error("Error: Target bits must be at most and minimum 2")
+    if (targetBits != 2) throw new Error("Error: Must have 2 target bits");
     var isTrue = true;
     for (var i in controlBits) {
       isTrue = isTrue && this.values[controlBits[i]].equals(one);
