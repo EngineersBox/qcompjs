@@ -55,8 +55,6 @@ var QC = function () {
     _classCallCheck(this, QC);
 
     this.values = _notation_interpreter2.default.evalBraKet(amplitudes);
-    console.log(this.values);
-
     var fillRange = function fillRange(start, end) {
       return Array(end - start + 1).fill().map(function (item, index) {
         return start + index;
@@ -160,6 +158,22 @@ var QC = function () {
       this.values = this.applyControlledOperatorToBits(this.not, controlBits, targetBits);
       return this;
     }
+  }, {
+    key: 'cswap',
+    value: function cswap(controlBits, targetBits) {
+      if (targetBits.length > 2) throw new Error("Error: Target bits must be at most and minimum 2");
+      var isTrue = true;
+      for (var i in controlBits) {
+        isTrue = isTrue && this.values[controlBits[i]].equals(one);
+      }
+      if (isTrue) {
+        var cBit = this.values[targetBits[0]];
+        var tBit = this.values[targetBits[1]];
+        this.values[targetBits[0]] = tBit;
+        this.values[targetBits[1]] = cBit;
+      }
+      return this;
+    }
   }]);
 
   return QC;
@@ -169,4 +183,5 @@ exports.default = QC;
 
 
 var qc = new QC("|01001>");
-console.log(qc.swap(0, 1).values);
+console.log(qc.values);
+console.log(qc.cswap([0, 1], [3, 4]).values);
