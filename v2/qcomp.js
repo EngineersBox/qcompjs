@@ -57,6 +57,21 @@ export default class QC {
     return this.values;
   }
 
+  applyControlledOperatorToBits(operation, cBits, tBits) {
+    if ((this.ALL.equals(tBits)) || (this.ALL.equals(cBits))) {
+      throw new Error("Error: Cannot apply control to all bits, must retain one impartial");
+    } else {
+      var isTrue = true;
+      for (var i in cBits) {
+        isTrue = isTrue && this.values[cBits[i]].equals(one);
+      }
+      if (isTrue) {
+        this.values = this.applyOperatorToBits(operation, tBits);
+      }
+    }
+    return this.values;
+  }
+
   X(bits) {
     this.paulix = [[0,1],
                   [1,0]];
@@ -106,16 +121,20 @@ export default class QC {
     return this;
   }
 
-  swap(controlBit, targetBit) {
-    var cbit = this.values[controlBit];
-    var tbit = this.values[targetBit];
-    this.values[controlBit] = tbit;
-    this.values[targetBit] = cbit;
+  swap(firstBit, secondBit) {
+    var cbit = this.values[firstBit];
+    var tbit = this.values[secondBit];
+    this.values[firstBit] = tbit;
+    this.values[secondBit] = cbit;
+    return this;
+  }
+
+  cnot(controlBits, targetBits) {
+    this.not = [[0,1],
+                [1,0]];
+    this.values = this.applyControlledOperatorToBits(this.not, controlBits, targetBits);
     return this;
   }
 }
 
 const qc = new QC("|01001>");
-console.log(qc.H([1,2])
-              .H([1,2])
-              .values);

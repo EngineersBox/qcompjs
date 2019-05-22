@@ -80,6 +80,22 @@ var QC = function () {
       return this.values;
     }
   }, {
+    key: 'applyControlledOperatorToBits',
+    value: function applyControlledOperatorToBits(operation, cBits, tBits) {
+      if (this.ALL.equals(tBits) || this.ALL.equals(cBits)) {
+        throw new Error("Error: Cannot apply control to all bits, must retain one impartial");
+      } else {
+        var isTrue = true;
+        for (var i in cBits) {
+          isTrue = isTrue && this.values[cBits[i]].equals(one);
+        }
+        if (isTrue) {
+          this.values = this.applyOperatorToBits(operation, tBits);
+        }
+      }
+      return this.values;
+    }
+  }, {
     key: 'X',
     value: function X(bits) {
       this.paulix = [[0, 1], [1, 0]];
@@ -130,11 +146,18 @@ var QC = function () {
     }
   }, {
     key: 'swap',
-    value: function swap(controlBit, targetBit) {
-      var cbit = this.values[controlBit];
-      var tbit = this.values[targetBit];
-      this.values[controlBit] = tbit;
-      this.values[targetBit] = cbit;
+    value: function swap(firstBit, secondBit) {
+      var cbit = this.values[firstBit];
+      var tbit = this.values[secondBit];
+      this.values[firstBit] = tbit;
+      this.values[secondBit] = cbit;
+      return this;
+    }
+  }, {
+    key: 'cnot',
+    value: function cnot(controlBits, targetBits) {
+      this.not = [[0, 1], [1, 0]];
+      this.values = this.applyControlledOperatorToBits(this.not, controlBits, targetBits);
       return this;
     }
   }]);
@@ -146,4 +169,4 @@ exports.default = QC;
 
 
 var qc = new QC("|01001>");
-console.log(qc.H([1, 2]).H([1, 2]).values);
+console.log(qc.swap(0, 1).values);
