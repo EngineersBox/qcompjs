@@ -25,6 +25,7 @@ var format = function () {
         throw new Error('Error: Expression must be of type String');
       } else {
         var eval_exp = new Array();
+        // Remove any of the syntactic sugar from the Bra-Ket notation
         var expr = expression.replace(/^\|/, '').replace(/>$/, '');
         // Iterate through the expression and convert '0' -> zero '1' -> one
         for (var i in expr) {
