@@ -35,10 +35,7 @@ Object.defineProperty(Array.prototype, "equals", {enumerable: false});
 export default class QC {
 
   constructor(amplitudes) {
-
     this.values = format.evalBraKet(amplitudes);
-    console.log(this.values);
-
     const fillRange = (start, end) => {
       return Array(end - start + 1).fill().map((item, index) => start + index);
     };
