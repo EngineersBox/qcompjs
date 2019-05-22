@@ -132,6 +132,21 @@ export default class QC {
     this.values = this.applyControlledOperatorToBits(this.not, controlBits, targetBits);
     return this;
   }
+
+  cswap(controlBits, targetBits) {
+    if (targetBits.length > 2) throw new Error("Error: Target bits must be at most and minimum 2")
+    var isTrue = true;
+    for (var i in controlBits) {
+      isTrue = isTrue && this.values[controlBits[i]].equals(one);
+    }
+    if (isTrue) {
+      var cBit = this.values[targetBits[0]];
+      var tBit = this.values[targetBits[1]];
+      this.values[targetBits[0]] = tBit;
+      this.values[targetBits[1]] = cBit;
+    }
+    return this;
+  }
 }
 
 const qc = new QC("|01001>");
