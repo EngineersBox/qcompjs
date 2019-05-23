@@ -1,3 +1,12 @@
+/*
+* Author: Jack Kilrain
+* Version: 2.1
+* Licensing: All Rights Reserved
+* Language: JavaScript (ES6)
+*
+* Description: Qubit representation and assosciated logic gates
+*/
+
 import * as math from 'mathjs';
 import format from './notation_interpreter';
 
@@ -134,19 +143,18 @@ export default class QC {
   }
 
   cswap(controlBits, targetBits) {
-    if (targetBits != 2) throw new Error("Error: Must have 2 target bits");
+    if (targetBits.length != 2) throw new Error("Error: Must have 2 target bits");
     var isTrue = true;
     for (var i in controlBits) {
       isTrue = isTrue && this.values[controlBits[i]].equals(one);
     }
     if (isTrue) {
-      var cBit = this.values[targetBits[0]];
-      var tBit = this.values[targetBits[1]];
-      this.values[targetBits[0]] = tBit;
-      this.values[targetBits[1]] = cBit;
+      this.values = this.swap(targetBits[0], targetBits[1]).values;
     }
     return this;
   }
 }
 
 const qc = new QC("|01001>");
+console.log(qc.values);
+console.log(qc.cswap([0,1],[3,4]).values);
