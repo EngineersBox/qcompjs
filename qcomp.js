@@ -165,7 +165,7 @@ class QC {
 
   // Rotate around the y-axis theta radians
   ry(theta, qubit) {
-    this.rx = [[math.cos(theta/2), math.multiply(-1, math.complex(math.sin(theta/2)))],
+    this.ry = [[math.cos(theta/2), math.multiply(-1, math.complex(math.sin(theta/2)))],
               [math.complex(math.sin(theta/2)), math.cos(theta/2)]];
     switch (theta) {
       // Return the inverted qubit if theta is pi radians
@@ -187,9 +187,9 @@ class QC {
 
   // Rotate around the z-axis theta radians
   rz(theta, qubit) {
-    this.rx = [[Math.exp(math.multiply(math.complex('0-1i'), theta/2)), 0],
+    this.rz = [[Math.exp(math.multiply(math.complex('0-1i'), theta/2)), 0],
               [0, Math.exp(math.multiply(math.complex('0+1i'), theta/2))]];
-    qubit.value = math.multiply(qubit.value, this.rx);
+    qubit.value = math.multiply(qubit.value, this.rz);
     return qubit;
   }
 
