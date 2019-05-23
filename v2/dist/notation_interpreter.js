@@ -8,6 +8,15 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/*
+* Author: Jack Kilrain
+* Version: 1.3
+* Licensing: All Rights Reserved
+* Language: JavaScript (ES6)
+*
+* Description: Interpets Dirac Bra-Ket notation into qcomp notation
+*/
+
 var one = [0, 1];
 var zero = [1, 0];
 

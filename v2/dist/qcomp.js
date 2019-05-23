@@ -4,7 +4,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Author: Jack Kilrain
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Version: 2.1
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Licensing: All Rights Reserved
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Language: JavaScript (ES6)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Description: Qubit representation and assosciated logic gates
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     */
 
 var _mathjs = require('mathjs');
 
@@ -161,16 +168,13 @@ var QC = function () {
   }, {
     key: 'cswap',
     value: function cswap(controlBits, targetBits) {
-      if (targetBits.length > 2) throw new Error("Error: Target bits must be at most and minimum 2");
+      if (targetBits.length != 2) throw new Error("Error: Must have 2 target bits");
       var isTrue = true;
       for (var i in controlBits) {
         isTrue = isTrue && this.values[controlBits[i]].equals(one);
       }
       if (isTrue) {
-        var cBit = this.values[targetBits[0]];
-        var tBit = this.values[targetBits[1]];
-        this.values[targetBits[0]] = tBit;
-        this.values[targetBits[1]] = cBit;
+        this.values = this.swap(targetBits[0], targetBits[1]).values;
       }
       return this;
     }

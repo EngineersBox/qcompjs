@@ -1,3 +1,12 @@
+/*
+* Author: Jack Kilrain
+* Version: 1.3
+* Licensing: All Rights Reserved
+* Language: JavaScript (ES6)
+*
+* Description: Interpets Dirac Bra-Ket notation into qcomp notation
+*/
+
 const one = [0,1];
 const zero = [1,0];
 
