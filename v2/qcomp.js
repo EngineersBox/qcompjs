@@ -28,11 +28,11 @@ Array.prototype.equals = function (array) {
   if (this.length != array.length) return false;
 
   for (var i = 0, l=this.length; i < l; i++) {
+    // Check if there are nested arrays and apply recursion to them
     if ((this[i] instanceof Array) && (array[i] instanceof Array)) {
-      // Check if there are nested arrays and apply recursion to them
       if (!this[i].equals(array[i])) return false;
+    // Check if there are two object instances
     } else if (this[i] != array[i]) {
-      // Check false if there are two object instances
       return false;
     }
   }
@@ -64,8 +64,10 @@ export default class QC {
   }
 
   applyControlledOperatorToBits(operation, cBits, tBits) {
-    if ((this.ALL.equals(tBits)) || (this.ALL.equals(cBits))) {
-      throw new Error("Error: Cannot apply control to all bits, must retain one impartial");
+    if (this.ALL.equals(cBits)) {
+      throw new Error("Error: Control bits cannot be ALL");
+    } else if (this.ALL.equals(tBits)) {
+      this.values = this.values.map(val => math.multiply(val, operation));
     } else {
       var isTrue = true;
       for (var i in cBits) {
