@@ -44,11 +44,11 @@ Array.prototype.equals = function (array) {
   if (this.length != array.length) return false;
 
   for (var i = 0, l = this.length; i < l; i++) {
+    // Check if there are nested arrays and apply recursion to them
     if (this[i] instanceof Array && array[i] instanceof Array) {
-      // Check if there are nested arrays and apply recursion to them
       if (!this[i].equals(array[i])) return false;
+      // Check if there are two object instances
     } else if (this[i] != array[i]) {
-      // Check false if there are two object instances
       return false;
     }
   }
@@ -87,8 +87,12 @@ var QC = function () {
   }, {
     key: 'applyControlledOperatorToBits',
     value: function applyControlledOperatorToBits(operation, cBits, tBits) {
-      if (this.ALL.equals(tBits) || this.ALL.equals(cBits)) {
-        throw new Error("Error: Cannot apply control to all bits, must retain one impartial");
+      if (this.ALL.equals(cBits)) {
+        throw new Error("Error: Control bits cannot be ALL");
+      } else if (this.ALL.equals(tBits)) {
+        this.values = this.values.map(function (val) {
+          return math.multiply(val, operation);
+        });
       } else {
         var isTrue = true;
         for (var i in cBits) {
@@ -178,6 +182,53 @@ var QC = function () {
       }
       return this;
     }
+  }, {
+    key: 'rx',
+    value: function rx(theta, targetBits) {
+      this.rx = [[math.cos(theta / 2), math.multiply(negi, math.complex(math.sin(theta / 2)))], [math.multiply(negi, math.complex(math.sin(theta / 2))), math.cos(theta / 2)]];
+      switch (theta) {
+        // Return the inverted qubit if theta is pi radians
+        case math.pi:
+          this.value = this.applyOperatorToBits([[0, 1], [1, 0]], targetBits);
+          break;
+        // Return the qubit if theta is 2*pi radians
+        case math.pi * 2:
+          this.values = this.values;
+          break;
+        // Apply the transformation to any other rotation
+        default:
+          this.values = this.applyOperatorToBits(this.rx, targetBits);
+          break;
+      }
+      return this;
+    }
+  }, {
+    key: 'ry',
+    value: function ry(theta, targetBits) {
+      this.ry = [[math.cos(theta / 2), math.multiply(-1, math.complex(math.sin(theta / 2)))], [math.complex(math.sin(theta / 2)), math.cos(theta / 2)]];
+      switch (theta) {
+        // Return the inverted qubit if theta is pi radians
+        case math.pi:
+          this.values = this.applyOperatorToBits([[0, 1], [1, 0]], targetBits);
+          break;
+        // Return the qubit if theta is 2*pi radians
+        case math.pi * 2:
+          this.values = this.values;
+          break;
+        // Apply the transformation to any other rotation
+        default:
+          this.values = this.applyOperatorToBits(this.ry, targetBits);
+          break;
+      }
+      return this;
+    }
+  }, {
+    key: 'rz',
+    value: function rz(theta, targetBits) {
+      this.rz = [[Math.exp(math.multiply(math.complex('0-1i'), theta / 2)), 0], [0, Math.exp(math.multiply(math.complex('0+1i'), theta / 2))]];
+      this.values = this.applyOperatorToBits(this.rz, targetBits);
+      return this;
+    }
   }]);
 
   return QC;
@@ -188,4 +239,4 @@ exports.default = QC;
 
 var qc = new QC("|01001>");
 console.log(qc.values);
-console.log(qc.cswap([0, 1], [3, 4]).values);
+console.log(qc.rx(math.fraction(math.pi, 3), [0, 1]).values);
