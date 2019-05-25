@@ -202,6 +202,11 @@ export default class QC {
     this.values = this.applyOperatorToBits(this.rz, targetBits);
     return this;
   }
+
+  // Return a formatted version of the q-register, preserving brackets and notation
+  getValues() {
+    return format.convetResultToString(this);
+  }
 }
 
 const qc = new QC("|01001>");
