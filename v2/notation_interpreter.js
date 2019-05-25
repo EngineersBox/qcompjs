@@ -34,4 +34,8 @@ export default class format {
     }
   }
 
+  static convetResultToString(expression) {
+    return JSON.stringify(expression.values);
+  }
+
 }
