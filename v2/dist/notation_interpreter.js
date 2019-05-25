@@ -48,6 +48,11 @@ var format = function () {
         return eval_exp;
       }
     }
+  }, {
+    key: 'convetResultToString',
+    value: function convetResultToString(expression) {
+      return JSON.stringify(expression.values);
+    }
   }]);
 
   return format;
