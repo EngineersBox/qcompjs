@@ -101,6 +101,20 @@ export default class QC {
     return this;
   }
 
+  S(bits) {
+    this.s = [[1,0],
+              [0,posi]];
+    this.values = this.applyOperatorToBits(this.s, bits);
+    return this;
+  }
+
+  Sdagger(bits) {
+    this.sdagger = [[1,0],
+                    [0,negi]];
+    this.values = this.applyOperatorToBits(this.sdagger, bits);
+    return this;
+  }
+
   sqrtx(bits) {
     this.sqrtx = math.multiply(0.5, [[posi, negi],
                                     [negi, posi]]);
@@ -110,14 +124,21 @@ export default class QC {
 
   phase(theta, bits) {
     this.phase = [[1, 0],
-              [0, Math.exp(math.multiply(posi, theta))]];
+              [0, math.exp(math.multiply(posi, theta))]];
     this.values = this.applyOperatorToBits(this.phase, bits);
     return this;
   }
 
   T(bits) {
     this.t = [[1, 0],
-              [0, math.e ** (posi * (math.pi/4))]];
+              [0, math.exp(math.multiply(posi, (math.pi/4)))]];
+    this.values = this.applyOperatorToBits(this.t, bits);
+    return this;
+  }
+
+  Tdagger(bits) {
+    this.t = [[1, 0],
+              [0, math.exp(math.multiply(negi, (math.pi/4)))]];
     this.values = this.applyOperatorToBits(this.t, bits);
     return this;
   }
@@ -197,8 +218,8 @@ export default class QC {
   }
 
   rz(theta, targetBits) {
-    this.rz = [[Math.exp(math.multiply(math.complex('0-1i'), theta/2)), 0],
-              [0, Math.exp(math.multiply(math.complex('0+1i'), theta/2))]];
+    this.rz = [[math.exp(math.multiply(math.complex('0-1i'), theta/2)), 0],
+              [0, math.exp(math.multiply(math.complex('0+1i'), theta/2))]];
     this.values = this.applyOperatorToBits(this.rz, targetBits);
     return this;
   }
