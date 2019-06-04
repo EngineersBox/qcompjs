@@ -41,13 +41,14 @@ Array.prototype.equals = function (array) {
 
 Object.defineProperty(Array.prototype, "equals", {enumerable: false});
 
+const fillRange = (start, end) => {
+  return Array(end - start + 1).fill().map((item, index) => start + index);
+};
+
 export default class QC {
 
-  constructor(amplitudes) {
-    this.values = format.evalBraKet(amplitudes);
-    const fillRange = (start, end) => {
-      return Array(end - start + 1).fill().map((item, index) => start + index);
-    };
+  constructor(values) {
+    this.values = format.evalBraKet(values);
     this.ALL = fillRange(0, this.values.length - 1);
 
   }
@@ -228,8 +229,28 @@ export default class QC {
   getValues() {
     return format.convetResultToString(this);
   }
+
+  normalise(bits) {
+    for (var i in bits) {
+      bits[i] = Math.pow(bits[i], 2);
+    }
+    return bits;
+  }
+
+  measure(bits) {
+    for (var i in bits) {
+      var cVal = this.normalise(this.values[i]);
+      if (Math.random(0, 1) <= cVal[0]) {
+        this.values[i] = zero;
+      } else {
+        this.values[i] = one
+      }
+    }
+    return this;
+  }
 }
 
 const qc = new QC("|01001>");
 console.log(qc.values);
-console.log(qc.rx(math.fraction(math.pi, 3), [0,1]).values);
+console.log(qc.H([0,1]).values);
+console.log(qc.measure([0,1]).values);
