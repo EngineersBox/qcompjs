@@ -57,16 +57,17 @@ Array.prototype.equals = function (array) {
 
 Object.defineProperty(Array.prototype, "equals", { enumerable: false });
 
+var fillRange = function fillRange(start, end) {
+  return Array(end - start + 1).fill().map(function (item, index) {
+    return start + index;
+  });
+};
+
 var QC = function () {
-  function QC(amplitudes) {
+  function QC(values) {
     _classCallCheck(this, QC);
 
-    this.values = _notation_interpreter2.default.evalBraKet(amplitudes);
-    var fillRange = function fillRange(start, end) {
-      return Array(end - start + 1).fill().map(function (item, index) {
-        return start + index;
-      });
-    };
+    this.values = _notation_interpreter2.default.evalBraKet(values);
     this.ALL = fillRange(0, this.values.length - 1);
   }
 
@@ -126,6 +127,20 @@ var QC = function () {
       return this;
     }
   }, {
+    key: 'S',
+    value: function S(bits) {
+      this.s = [[1, 0], [0, posi]];
+      this.values = this.applyOperatorToBits(this.s, bits);
+      return this;
+    }
+  }, {
+    key: 'Sdagger',
+    value: function Sdagger(bits) {
+      this.sdagger = [[1, 0], [0, negi]];
+      this.values = this.applyOperatorToBits(this.sdagger, bits);
+      return this;
+    }
+  }, {
     key: 'sqrtx',
     value: function sqrtx(bits) {
       this.sqrtx = math.multiply(0.5, [[posi, negi], [negi, posi]]);
@@ -135,14 +150,21 @@ var QC = function () {
   }, {
     key: 'phase',
     value: function phase(theta, bits) {
-      this.phase = [[1, 0], [0, Math.exp(math.multiply(posi, theta))]];
+      this.phase = [[1, 0], [0, math.exp(math.multiply(posi, theta))]];
       this.values = this.applyOperatorToBits(this.phase, bits);
       return this;
     }
   }, {
     key: 'T',
     value: function T(bits) {
-      this.t = [[1, 0], [0, math.e ** (posi * (math.pi / 4))]];
+      this.t = [[1, 0], [0, math.exp(math.multiply(posi, math.pi / 4))]];
+      this.values = this.applyOperatorToBits(this.t, bits);
+      return this;
+    }
+  }, {
+    key: 'Tdagger',
+    value: function Tdagger(bits) {
+      this.t = [[1, 0], [0, math.exp(math.multiply(negi, math.pi / 4))]];
       this.values = this.applyOperatorToBits(this.t, bits);
       return this;
     }
@@ -225,8 +247,37 @@ var QC = function () {
   }, {
     key: 'rz',
     value: function rz(theta, targetBits) {
-      this.rz = [[Math.exp(math.multiply(math.complex('0-1i'), theta / 2)), 0], [0, Math.exp(math.multiply(math.complex('0+1i'), theta / 2))]];
+      this.rz = [[math.exp(math.multiply(math.complex('0-1i'), theta / 2)), 0], [0, math.exp(math.multiply(math.complex('0+1i'), theta / 2))]];
       this.values = this.applyOperatorToBits(this.rz, targetBits);
+      return this;
+    }
+
+    // Return a formatted version of the q-register, preserving brackets and notation
+
+  }, {
+    key: 'getValues',
+    value: function getValues() {
+      return _notation_interpreter2.default.convetResultToString(this);
+    }
+  }, {
+    key: 'normalise',
+    value: function normalise(bits) {
+      for (var i in bits) {
+        bits[i] = Math.pow(bits[i], 2);
+      }
+      return bits;
+    }
+  }, {
+    key: 'measure',
+    value: function measure(bits) {
+      for (var i in bits) {
+        var cVal = this.normalise(this.values[i]);
+        if (Math.random(0, 1) <= cVal[0]) {
+          this.values[i] = zero;
+        } else {
+          this.values[i] = one;
+        }
+      }
       return this;
     }
   }]);
@@ -239,4 +290,5 @@ exports.default = QC;
 
 var qc = new QC("|01001>");
 console.log(qc.values);
-console.log(qc.rx(math.fraction(math.pi, 3), [0, 1]).values);
+console.log(qc.H([0, 1]).values);
+console.log(qc.measure([0, 1]).values);
